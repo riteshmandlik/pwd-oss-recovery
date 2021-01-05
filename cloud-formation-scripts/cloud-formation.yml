@@ -14,7 +14,14 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: pwdColleagueVerificationInsertionLambda
-      CodeUri: ../ssprlambda/colleague-insertion.js
+      CodeUri:
+        Bucket: poc-deployment-bucket
+        Key: !Join
+              - ''
+              - !Ref repairOktaLifeCycleVersion
+              - '.zip'
+        Sub '${uuid}/main.zip'
+      CodeUri: ./ssprlambda/colleague-insertion.js
       MemorySize: 128
       Role: !Sub arn:aws:iam::${AWS::AccountId}:role/gseccloud/sf-okta-api-lambda-role
       Runtime: nodejs12.x
