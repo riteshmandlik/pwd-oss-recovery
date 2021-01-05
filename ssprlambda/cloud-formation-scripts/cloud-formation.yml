@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: "AWS::Serverless-2016-10-31"
+Description: An AWS Serverless Specification template describing your function.
+
+Resources:
+  pwdColleagueVerificationEventLog:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: pwdColleagueVerificationEventQueue
+      DelaySeconds: 0
+      VisibilityTimeout: 120
+      MessageRetentionPeriod: 900
+  pwdColleagueVerificationLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: pwdColleagueVerificationInsertionLambda
+      CodeUri: ../ssprlambda/colleague-insertion.js
+      MemorySize: 128
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/gseccloud/sf-okta-api-lambda-role
+      Runtime: nodejs12.x
+      Timeout: 30
+      ReservedConcurrentExecutions: 10
+    Events:
+      pwdColleagueVerificationEvent:
+        Type: SQS
+        Properties:
+        Queue: !Sub arn:aws:sqs:us-east-1:${AWS::AccountId}:lambda-dynamo-role
