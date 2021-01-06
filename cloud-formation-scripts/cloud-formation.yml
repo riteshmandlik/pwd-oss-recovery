@@ -18,9 +18,10 @@ Resources:
         Bucket: poc-deployment-bucket
         Key: !Join
               - ''
-              - ${GIT_COMMIT}
-              - '.zip'
-      Handler: ./college-insertion.main
+              - - 'pwd-oss-recovery/'
+                - '${GIT_COMMIT}'
+                - '.zip'
+      Handler: colleague-insertion.main
       MemorySize: 128
       Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda-dynamo-role
       Runtime: nodejs12.x
@@ -30,4 +31,4 @@ Resources:
       pwdColleagueVerificationEvent:
         Type: SQS
         Properties:
-        Queue: !Sub arn:aws:sqs:us-east-1:${AWS::AccountId}:lambda-dynamo-role
+          Queue: !Sub arn:aws:sqs:us-east-1:${AWS::AccountId}:pwdColleagueVerificationEventQueue
