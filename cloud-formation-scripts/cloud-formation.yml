@@ -22,7 +22,7 @@ Resources:
               - '.zip'
       Handler: ./college-insertion.main
       MemorySize: 128
-      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/gseccloud/sf-okta-api-lambda-role
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda-dynamo-role
       Runtime: nodejs12.x
       Timeout: 30
       ReservedConcurrentExecutions: 10
