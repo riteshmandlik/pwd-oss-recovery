@@ -1,0 +1,24 @@
+pipeline {
+    agent {
+        label params.AGENT 
+    }
+
+    parameters {
+        choice(name: "AGENT", choices: ["devl", "prod"]) 
+    }
+
+    stages {
+        when {
+                expression { params.AGENT == 'devl' }
+            }
+            steps {
+                echo "Devl Condition is working"
+            }
+            when {
+                expression { params.AGENT == 'prod' }
+            }
+            steps {
+                echo "Prod Condition is working"
+            }
+    }
+}
