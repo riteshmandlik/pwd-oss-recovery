@@ -26,10 +26,10 @@ pipeline {
         }        
         stage("Any") {
         when {
-                expression { params.AGENT == 'any' }
+                expression { params.AGENT == 'master' }
             }
             steps {
-                echo "Any Condition is working"
+                echo "master Condition is working"
             }
         }        
 
