@@ -24,7 +24,7 @@ pipeline {
                 echo "Prod Condition is working"
             }
         }        
-        stage("Prod") {
+        stage("Any") {
         when {
                 expression { params.AGENT == 'any' }
             }
