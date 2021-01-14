@@ -8,19 +8,23 @@ pipeline {
     }
 
     stages {
+        stage {
         when {
                 expression { params.AGENT == 'devl' }
             }
             steps {
                 echo "Devl Condition is working"
             }
+        }        
     }
     stages {
-            when {
+        stage {
+        when {
                 expression { params.AGENT == 'prod' }
             }
             steps {
                 echo "Prod Condition is working"
             }
+        }        
     }
 }
