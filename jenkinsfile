@@ -4,7 +4,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: "AGENT", choices: ["any", "devl", "prod"]) 
+        choice(name: "AGENT", choices: ["master", "devl", "prod"]) 
     }
 
     stages {
