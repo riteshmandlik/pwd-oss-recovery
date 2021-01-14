@@ -4,7 +4,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: "AGENT", choices: ["devl", "prod"]) 
+        choice(name: "AGENT", choices: ["any", "devl", "prod"]) 
     }
 
     stages {
@@ -24,6 +24,15 @@ pipeline {
                 echo "Prod Condition is working"
             }
         }        
+        stage("Prod") {
+        when {
+                expression { params.AGENT == 'any' }
+            }
+            steps {
+                echo "Any Condition is working"
+            }
+        }        
+
     
     }
 }
