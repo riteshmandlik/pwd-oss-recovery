@@ -1,7 +1,13 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: "AWS::Serverless-2016-10-31"
 Description: An AWS Serverless Specification template describing your function.
-
+Parameters:
+  colleagueInsertionLambdaVersion:
+    Type: String
+    Description: Colleague Insertion Lambda Version
+  bucketName:
+    Type: String
+    Description: bucketName
 Resources:
   pwdColleagueVerificationEventLog:
     Type: AWS::SQS::Queue
@@ -15,20 +21,67 @@ Resources:
     Properties:
       FunctionName: pwdColleagueVerificationInsertionLambda
       CodeUri:
-        Bucket: poc-deployment-bucket
+        Bucket: !Ref bucketName
         Key: !Join
               - ''
               - - 'pwd-oss-recovery/'
-                - '${GIT_COMMIT}'
+                - !Ref colleagueInsertionLambdaVersion
                 - '.zip'
       Handler: colleague-insertion.main
       MemorySize: 128
-      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/lambda-dynamo-role
       Runtime: nodejs12.x
       Timeout: 30
       ReservedConcurrentExecutions: 10
-    Events:
-      pwdColleagueVerificationEvent:
-        Type: SQS
-        Properties:
-          Queue: !Sub arn:aws:sqs:us-east-1:${AWS::AccountId}:pwdColleagueVerificationEventQueue
+      Events:
+        pwdColleagueVerificationEvent:
+          Type: SQS
+          Properties:
+            Queue: !Sub arn:aws:sqs:us-east-1:749511179172:pwdColleagueVerificationEventQueue
+  pwdUsernameColleagueUsernameLogTable: 
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: pwdOssEventLogTable
+      AttributeDefinitions:
+        - AttributeName: key
+          AttributeType: S
+        - AttributeName: user_name
+          AttributeType: S
+        - AttributeName: event_ts
+          AttributeType: S
+      KeySchema:
+        - AttributeName: key
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+       -
+         IndexName: pwd_oss_user_name_event_ts_index
+         KeySchema:
+          -
+            AttributeName: user_name
+            KeyType: HASH
+          -
+            AttributeName: event_ts
+            KeyType: RANGE
+         Projection: 
+          ProjectionType: "ALL"  
+      BillingMode: PAY_PER_REQUEST
+  pwdOssBlockedUserEventTable: 
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: pwdOssBlockedUserEventTable
+      AttributeDefinitions:
+        - AttributeName: blocked_user_name
+          AttributeType: S
+        - AttributeName: blocked_event
+          AttributeType: S
+      KeySchema:
+        - AttributeName: blocked_user_name
+          KeyType: HASH
+        - AttributeName: blocked_event
+          KeyType: RANGE
+      ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+      TimeToLiveSpecification: 
+          AttributeName: ttl
+          Enabled: true
+
