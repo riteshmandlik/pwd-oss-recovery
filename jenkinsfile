@@ -15,10 +15,8 @@ pipeline {
             steps {
                 echo "Devl Condition is working"
             }
-        }        
-    }
-    stages {
-        stage("Prod") {
+        }    
+       stage("Prod") {
         when {
                 expression { params.AGENT == 'prod' }
             }
@@ -26,5 +24,6 @@ pipeline {
                 echo "Prod Condition is working"
             }
         }        
+    
     }
 }
